@@ -1,0 +1,7 @@
+name : shao-plot-dstat
+channels:
+  - defaults
+dependencies:
+  - matplotlib
+  - python=3.8.5
+  - configparser
