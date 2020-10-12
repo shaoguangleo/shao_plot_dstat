@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 '''
-This file will plot the data rate extract from iperf3 JSON file
+This file will plot the data rate extract from dstat file
 '''
 
 import os
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import sys
 import argparse
 from datetime import datetime
@@ -50,9 +51,20 @@ def get_csv_data(logfile):
             tt.append(i)
     return tt
 
+def get_data_time(logfile):
+    t = get_csv_data(logfile)
+    data_time = []
+    for i in t:
+        if i == '\n':
+            pass
+        else:
+            data_time.append('2020-'+(i.split(',')[0]))
+    return data_time
+
 
 def plot_dstat_recv_rate(
         data,
+        xaxis=None,
         infile='',
         title = 'Network Rate',
         outfile=datetime.now().__format__('NetworkTest-%Y%m%d%H%M%S.png'),
@@ -71,10 +83,19 @@ def plot_dstat_recv_rate(
         Default False, it will plot the figure if set True
     '''
 
-    plt.xlabel('Time (s)')
+    plt.xlabel('Time')
     plt.ylabel('Data Rate (Gbps)')
     plt.title((f'{title}\n{infile}').format(title = title, infile = infile))
-    plt.plot(data, 'ro-')
+
+    if xaxis == None:
+        plt.plot(data, 'ro-')
+    else:
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
+        plt.gca().xaxis.set_major_locator(mdates.MinuteLocator())
+        plt.plot(xaxis, data, 'ro-')
+
+    plt.gcf().autofmt_xdate()
+
     plt.savefig(outfile)
     if debug:
         plt.show()
@@ -121,7 +142,13 @@ def main(argv=None):
             else:
                 recv_rate.append(float(i.split(',')[10])*8/1024.0/1024/1024)
 
-        plot_dstat_recv_rate(recv_rate, infile=infile, outfile=options.outfile)
+        timestamps = get_data_time(options.logfile)
+
+        xs = [datetime.strptime(i, '%Y-%d-%m %H:%M:%S') for i in timestamps]
+
+        print(xs)
+
+        plot_dstat_recv_rate(recv_rate, xaxis=xs, title=options.title, infile=infile, outfile=options.outfile)
     else:
         print("Please specify a log file using dstat")
         sys.exit(0)
