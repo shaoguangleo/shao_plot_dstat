@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+
+'''
+The shao_plot_dstat program
+'''
+
+import sys
+from shao_plot_dstat import plot_dstat
+
+if __name__ == '__main__':
+    sys.exit(plot_dstat.main(sys.argv))

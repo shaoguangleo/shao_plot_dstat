@@ -19,7 +19,7 @@ def read(fname):
 
 def get_version():
     """Get the version number of shao_plot_dstat"""
-    import plotdstat
+    import shao_plot_dstat as plotdstat
     return plotdstat.__version__
 
 
@@ -28,15 +28,9 @@ reqs = ['scipy>=0.16',
         'six>=1.11']
 
 if sys.version_info < (3,0):
-    reqs.append('numpy>=1.16,<1.18')
-    reqs.append('astropy>=2.0, <3')
-    reqs.append('lmfit>=0.9.2, <1')
+    reqs.append('matplotlib>=3.1.2,<3.2.2')
 else:
-    reqs.append('numpy>=1.16')
-    reqs.append('astropy>=2.0')
-    reqs.append('lmfit>=0.9.2')
-
-data_dir = 'test'
+    reqs.append('matplotlib>=3.2.2')
 
 setup(
     name="shao_plot_dstat",
@@ -49,9 +43,9 @@ setup(
     long_description_content_type='text/markdown',
     packages=['shao_plot_dstat'],
     install_requires=reqs,
-    #scripts=['scripts/aegean', 'scripts/BANE', 'scripts/SR6', 'scripts/AeRes', 'scripts/MIMAS'],
-    #data_files=[('AegeanTools', [os.path.join(data_dir, 'MOC.fits')]) ],
+    data_files=[('data/test.log') ],
     python_requires='>=3.7',
+    scripts=['scripts/shao_plot_dstat']
     #setup_requires=['pytest-runner'],
     #tests_require=['pytest', 'nose']
 )

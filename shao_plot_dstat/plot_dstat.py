@@ -150,7 +150,9 @@ def main(argv=None):
 
         plot_dstat_recv_rate(recv_rate, xaxis=xs, title=options.title, infile=infile, outfile=options.outfile)
     else:
-        print("Please specify a log file using dstat")
+        print("Please specify a log file using dstat\n")
+        print('or\n')
+        print('Type `shao_plot_dstat --help` to get more informations')
         sys.exit(0)
 
 if __name__ == '__main__':
