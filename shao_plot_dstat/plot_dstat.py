@@ -69,6 +69,7 @@ def plot_dstat_recv_rate(
         title = 'Network Rate',
         outfile=datetime.now().__format__('NetworkTest-%Y%m%d%H%M%S.png'),
         locator = 'second',
+        unit = 'Mbps',
         debug=True):
     '''
     Will plot a data rate from dstat logfile
@@ -85,7 +86,15 @@ def plot_dstat_recv_rate(
     '''
 
     plt.xlabel('Time')
-    plt.ylabel('Data Rate (Gbps)')
+    if unit == 'Kbps':
+        plt.ylabel('Data Rate (Gbps)')
+    elif unit == 'Mbps':
+        plt.ylabel('Data Rate (Mbps)')
+    elif unit == 'Gbps':
+        plt.ylabel('Data Rate (Gbps)')
+    else :
+        plt.ylabel('Data Rate (Mbps)')
+
     plt.title((f'{title}\n{infile}').format(title = title, infile = infile))
 
     if xaxis == None:
@@ -132,6 +141,10 @@ def main(argv=None):
         default='second',
         help="The locator in xaxis, can be second, minute, hour, day.")
     parser.add_argument(
+        "--unit",
+        default='Mbps',
+        help="The unit of data rate , can be in [Gbps, Mbps, Kbps].")
+    parser.add_argument(
         "--title",
         default='Dstat Test',
         help="Title using in the Figure (e.g.: Demo)")
@@ -144,6 +157,14 @@ def main(argv=None):
     # configure logging
     config_logging(options.debug)
 
+    unit = 'Mbps'
+    if options.unit == 'Kbps':
+        unit = 'Kbps'
+    elif options.unit == 'Mbps':
+        unit = 'Mbps'
+    else:
+        unit = 'Gbps'
+
     if os.path.isfile(options.logfile):
         infile =  options.logfile
         get_csv_data(infile)
@@ -154,7 +175,14 @@ def main(argv=None):
             if i == '\n' :
                 pass
             else:
-                recv_rate.append(float(i.split(',')[10])*8/1024.0/1024/1024)
+                if unit == 'Gbps':
+                    recv_rate.append(float(i.split(',')[10])*8/1024.0/1024/1024)
+                elif unit == 'Mbps':
+                    recv_rate.append(float(i.split(',')[10])*8/1024.0/1024)
+                elif unit == 'Kbps':
+                    recv_rate.append(float(i.split(',')[10])*8/1024.0)
+                else:
+                    recv_rate.append(float(i.split(',')[10])*8/1024.0/1024)
 
         timestamps = get_data_time(options.logfile)
 
@@ -162,7 +190,7 @@ def main(argv=None):
 
         print(xs)
 
-        plot_dstat_recv_rate(recv_rate, xaxis=xs, title=options.title, infile=infile,locator=options.locator, outfile=options.outfile)
+        plot_dstat_recv_rate(recv_rate, xaxis=xs, title=options.title, infile=infile,locator=options.locator, unit=unit, outfile=options.outfile)
     else:
         print("Please specify a log file using dstat\n")
         print('or\n')
