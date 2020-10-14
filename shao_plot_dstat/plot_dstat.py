@@ -68,6 +68,7 @@ def plot_dstat_recv_rate(
         infile='',
         title = 'Network Rate',
         outfile=datetime.now().__format__('NetworkTest-%Y%m%d%H%M%S.png'),
+        locator = 'second',
         debug=True):
     '''
     Will plot a data rate from dstat logfile
@@ -91,7 +92,16 @@ def plot_dstat_recv_rate(
         plt.plot(data, 'ro-')
     else:
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
-        plt.gca().xaxis.set_major_locator(mdates.MinuteLocator())
+        if locator == 'second':
+            plt.gca().xaxis.set_major_locator(mdates.SecondLocator())
+        elif locator == 'minute':
+            plt.gca().xaxis.set_major_locator(mdates.MinuteLocator())
+        elif locator == 'hour':
+            plt.gca().xaxis.set_major_locator(mdates.HourLocator())
+        elif locator == 'day':
+            plt.gca().xaxis.set_major_locator(mdates.DayLocator())
+        else:
+            plt.gca().xaxis.set_major_locator(mdates.SecondLocator())
         plt.plot(xaxis, data, 'ro-')
 
     plt.gcf().autofmt_xdate()
@@ -117,6 +127,10 @@ def main(argv=None):
         "--outfile",
         default=datetime.now().__format__('DstatTest-%Y%m%d%H%M%S.png'),
         help="Filename to save the plot (e.g.: dstattest-1.png)")
+    parser.add_argument(
+        "--locator",
+        default='second',
+        help="The locator in xaxis, can be second, minute, hour, day.")
     parser.add_argument(
         "--title",
         default='Dstat Test',
@@ -148,7 +162,7 @@ def main(argv=None):
 
         print(xs)
 
-        plot_dstat_recv_rate(recv_rate, xaxis=xs, title=options.title, infile=infile, outfile=options.outfile)
+        plot_dstat_recv_rate(recv_rate, xaxis=xs, title=options.title, infile=infile,locator=options.locator, outfile=options.outfile)
     else:
         print("Please specify a log file using dstat\n")
         print('or\n')
