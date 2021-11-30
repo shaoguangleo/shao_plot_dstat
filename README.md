@@ -12,8 +12,8 @@ There are two methods to install shao-plot-dstat
 $ git clone https://github.com/shaoguangleo/shao-plot-dstat.git
 $ cd shao-plot-dstat
 $ conda env create -f environment.yaml
-$ pip3 setup.py build
-$ pip3 setup.py install
+$ python3 setup.py build
+$ python3 setup.py install
 ```
 
 ## pip
@@ -22,8 +22,8 @@ $ pip3 setup.py install
 $ git clone https://github.com/shaoguangleo/shao-plot-dstat.git
 $ cd shao-plot-dstat
 $ pip3 install -r requirements.txt
-$ pip3 setup.py build
-$ pip3 setup.py install
+$ python3 setup.py build
+$ python3 setup.py install
 ```
 
 
